@@ -9,7 +9,7 @@ ENV JAVA_PACKAGE       jdk
 
 # Download and unarchive Java
 RUN mkdir -p /opt &&\
-  curl -x http://10.10.3.32:3128 -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie"\
+  curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie"\
     http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
     | gunzip -c - | tar -xf - -C /opt &&\
   ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk &&\
