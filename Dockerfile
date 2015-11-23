@@ -1,16 +1,39 @@
-# Play Base Image with port and code folder exposed
-FROM ubuntu:14.04
-MAINTAINER Edward Xie <edward.xie@leandev.se>
+FROM edwxie/alpine-base
+MAINTAINER Edward Xie <waterscar@gmail.com>
 
-RUN apt-get install -y software-properties-common \
-&& add-apt-repository -y ppa:webupd8team/java
+# Java Version
+ENV JAVA_VERSION_MAJOR 8
+ENV JAVA_VERSION_MINOR 66
+ENV JAVA_VERSION_BUILD 17
+ENV JAVA_PACKAGE       jdk
 
-RUN apt-get update \
-&& echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
-&& echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections \
-&& apt-get install -y oracle-java8-installer
+# Download and unarchive Java
+RUN mkdir -p /opt &&\
+  curl -x http://10.10.3.32:3128 -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie"\
+    http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
+    | gunzip -c - | tar -xf - -C /opt &&\
+  ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk &&\
+  rm -rf /opt/jdk/*src.zip \
+         /opt/jdk/lib/missioncontrol \
+         /opt/jdk/lib/visualvm \
+         /opt/jdk/lib/*javafx* \
+         /opt/jdk/jre/lib/plugin.jar \
+         /opt/jdk/jre/lib/ext/jfxrt.jar \
+         /opt/jdk/jre/bin/javaws \
+         /opt/jdk/jre/lib/javaws.jar \
+         /opt/jdk/jre/lib/desktop \
+         /opt/jdk/jre/plugin \
+         /opt/jdk/jre/lib/deploy* \
+         /opt/jdk/jre/lib/*javafx* \
+         /opt/jdk/jre/lib/*jfx* \
+         /opt/jdk/jre/lib/amd64/libdecora_sse.so \
+         /opt/jdk/jre/lib/amd64/libprism_*.so \
+         /opt/jdk/jre/lib/amd64/libfxplugins.so \
+         /opt/jdk/jre/lib/amd64/libglass.so \
+         /opt/jdk/jre/lib/amd64/libgstreamer-lite.so \
+         /opt/jdk/jre/lib/amd64/libjavafx*.so \
+         /opt/jdk/jre/lib/amd64/libjfx*.so
 
-RUN apt-get install -y openssh-client \
-&& ssh-keygen -q -N '' -f ~/.ssh/id_rsa -t rsa -C "docker.jdk8@leandev.se"
-
-ENV         JAVA_HOME         /usr/lib/jvm/java-8-oracle
+# Set environment
+ENV JAVA_HOME /opt/jdk
+ENV PATH ${PATH}:${JAVA_HOME}/bin
