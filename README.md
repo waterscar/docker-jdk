@@ -2,4 +2,4 @@
 
 Oracle JDK Based on apline + tools, quite small
 
-[![](https://badge.imagelayers.io/edwxie/jdk:latest.svg)](https://imagelayers.io/?images=edwxie/jdk:latest 'Get your own badge on imagelayers.io')
+[![](https://images.microbadger.com/badges/image/edwxie/jdk.svg)](http://microbadger.com/images/edwxie/jdk "Get your own image badge on microbadger.com")
